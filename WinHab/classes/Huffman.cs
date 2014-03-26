@@ -17,11 +17,12 @@ namespace WinHab.classes
             leDictionnaire = new Dictionary<char, int>();
             // il faut construire le dictionnaire à partir de la chaine.
             char c;
+            // parce la chaine caractere par caratere :
             for (int i = 0; i < chaine.Length; i++)
             {
                 if (char.TryParse(chaine[i].ToString(), out c))
                 {
-                    //on verifie si c existe déjà dans le dictionnaire.
+                    //on verifie si le caractere existe déjà dans le dictionnaire.
                     if (leDictionnaire.ContainsKey(c))
                     {
                         // la valeur existe déjà, on incrémente juste la valeur
@@ -29,6 +30,7 @@ namespace WinHab.classes
                     }
                     else
                     {
+                        // on ajoute la valeur dans le dictionnaire :
                         leDictionnaire.Add(c, 1);
                     }
                 }
@@ -36,6 +38,9 @@ namespace WinHab.classes
             }
             //dictionnaire terminé, on doit créer l'arbre à partir de se dictionnaire
             Arbre huffmanArbre = new Arbre(leDictionnaire);
+
+
+            
        }
     }
 }

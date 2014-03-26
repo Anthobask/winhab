@@ -28,6 +28,7 @@ namespace WinHab
         {
             string texte = tb_input.Text.ToString();
             Huffman algo = new Huffman(texte);
+
         }
     }
 }

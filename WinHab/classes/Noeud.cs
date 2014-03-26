@@ -7,41 +7,43 @@ namespace WinHab.classes
 {
     class Noeud
     {
-        /* 
-            Un noeud c'est : un valeur obligatoire accompagné soit par : 
-              - un caractere. Dans ce cas ce noeud sera une feuille.
-              - deux autres noeuds, dans ce cas, ce noeud est un arbres.
-        */
         int valeur = 0;
-        Feuille feuilleG = null;
-        Feuille feuilleD = null;
-        Noeud noeudG = null;
+
+        
+        char caractere;
+
+        
         Noeud noeudD = null;
 
-        public Noeud(Feuille fG, Feuille fD, int v)
+
+        Noeud noeudG = null;
+
+
+        public char Caractere
+        {
+            get { return caractere; }
+            set { caractere = value; }
+        }
+        public int Valeur
+        {
+            get { return valeur; }
+            set { valeur = value; }
+        }
+
+        // c'est une feuille
+        public Noeud(int v, char c)
         {
             valeur = v;
-            feuilleG = fG;
-            feuilleD = fD;
+            caractere = c;
         }
-        public Noeud(Feuille fG, Noeud nD, int v)
+        // c'est un noeud
+        public Noeud(int v, Noeud ng, Noeud nd)
         {
             valeur = v;
-            feuilleG = fG;
-            noeudD = nD;
+            noeudD = nd;
+            noeudG = ng;
         }
-        public Noeud(Noeud nG, Feuille fD, int v)
-        {
-            valeur = v;
-            noeudG = nG;
-            feuilleD = fD;
-        }
-        public Noeud(Noeud nG, Noeud nD, int v)
-        {
-            valeur = v;
-            noeudD = nD;
-            noeudG = nG;
-        }
+
 
     }
 }

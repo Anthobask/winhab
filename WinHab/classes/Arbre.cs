@@ -24,7 +24,11 @@ namespace WinHab.classes
                 char occurenceMax = (char)0; //ASCII
                 foreach (KeyValuePair<char, int> ligne in leDictionnaire)
                 {
-                    if (maxValue < ligne.Value) occurenceMax = ligne.Key;
+                    if (maxValue < ligne.Value)
+                    {
+                        occurenceMax = ligne.Key;
+                        maxValue = ligne.Value;
+                    }
                 }
                 //création de la feuille
                 lesFeuilles.Add(new Feuille(maxValue, occurenceMax));

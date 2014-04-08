@@ -5,20 +5,26 @@ using System.Text;
 
 namespace WinHab.classes
 {
+
     class Arbre
     {
-        Dictionary<char, int> leDictionnaire;
-        List<Noeud> lesNoeuds;
+        private Dictionary<char, int> leDictionnaire;
+        private List<Noeud> lesNoeuds;
+
+        internal List<Noeud> LesNoeuds
+        {
+            get { return lesNoeuds; }
+            set { lesNoeuds = value; }
+        }
 
         public Arbre(Dictionary<char, int> dico)
         {
-            leDictionnaire = dico;
-
+            // Le dictionnaire d'entrée est trié du plus léger au plus lourd :
+            this.leDictionnaire = sortDicoByValue(dico);
             // Création au départ d'une liste de feuille :
             this.initFeuillage();
 
             // Puis on crée un arbre de noeud :
-
             while (lesNoeuds.Count() > 1)
             {
                 // premier noeud = plus leger :
@@ -26,35 +32,23 @@ namespace WinHab.classes
                 lesNoeuds.Remove(lesNoeuds[1]);
                 lesNoeuds.Remove(lesNoeuds[0]);
                 lesNoeuds.Add(noeudTmp);
-                lesNoeuds = this.TriListNoeud(lesNoeuds);
+
+                lesNoeuds = sortListNoeudsByValue(lesNoeuds);
+
+                
             }
             Console.WriteLine("coucou");
         }
 
         private void initFeuillage()
         {
-            //on trouve la plus grande occurence et on l'ajoute dans la liste.
-            int tailleDico = leDictionnaire.Count;
-            lesNoeuds = new List<Noeud>();
-            for (int i = 0; i < tailleDico; i++)
+            this.lesNoeuds = new List<Noeud>();
+            // On créer la liste des noeuds de la plus petite à la plus grande :
+            foreach (var item in this.leDictionnaire.OrderBy(i => i.Value))
             {
-                int maxValue = 0;
-                char occurenceMax = (char)0; //ASCII
-                foreach (KeyValuePair<char, int> ligne in leDictionnaire)
-                {
-                    if (maxValue < ligne.Value)
-                    {
-                        occurenceMax = ligne.Key;
-                        maxValue = ligne.Value;
-                    }
-                }
-                //création de la feuille
-                lesNoeuds.Add(new Noeud(maxValue, occurenceMax));
-                //on supprime cette ligne du dico pour le plus la rencontrer
-                leDictionnaire.Remove(occurenceMax);
+                Noeud unNoeud = new Noeud(item.Value, item.Key);
+                lesNoeuds.Add(unNoeud);
             }
-            // de la plus petite occurrence à la plus grande :
-            lesNoeuds.Reverse();
             Console.WriteLine("toutes les feuilles sont créées.");
         }
 
@@ -82,6 +76,28 @@ namespace WinHab.classes
             }
             return listeReturn;
         }
+
+
+        private Dictionary<char, int> sortDicoByValue(Dictionary<char, int> unDictionnaire)
+        {
+            Dictionary<char, int> dicoSorted = new Dictionary<char, int>();
+            foreach (var item in unDictionnaire.OrderBy(i => i.Value))
+            {
+                dicoSorted.Add(item.Key, item.Value);
+            }
+            return dicoSorted;
+        }
+
+        private List<Noeud> sortListNoeudsByValue(List<Noeud> listeNoeuds)
+        {
+            List<Noeud> listeSorted = new List<Noeud>();
+            foreach (Noeud item in listeNoeuds.OrderBy(i => i.Valeur))
+            {
+                listeSorted.Add(item);
+            }
+            return listeSorted;
+        }
+
 
     }
 }

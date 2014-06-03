@@ -61,7 +61,8 @@ namespace WinHab
                 }
                 else if (rd_LZW.Checked)
                 {
-                    LZW.encryp(textBox1.Text);
+                    LZW.encryp(textBox1.Text, saveFileDialog1.FileName);
+                    MessageBox.Show("Terminé");
                 }
             }
             else
@@ -83,7 +84,7 @@ namespace WinHab
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (System.IO.File.Exists(textBox2.Text))
+            if (System.IO.Directory.Exists(textBox2.Text))
             {
                 SaveFileDialog saveFileDialog1 = new SaveFileDialog();
                 if (saveFileDialog1.ShowDialog() == DialogResult.OK)
@@ -98,7 +99,8 @@ namespace WinHab
                 }
                 else
                 {
-                    LZW.encrypFolfer(textBox2.Text);
+                    LZW.encrypFolfer(textBox2.Text, saveFileDialog1.FileName);
+                    MessageBox.Show("Terminé");
                 }
             }
             else
@@ -132,6 +134,7 @@ namespace WinHab
                     else if (rd_LZW.Checked)
                     {
                         LZW.decrypt(textBox4.Text, dossier.SelectedPath);
+                        MessageBox.Show("Terminé");
                     }
                 }
             }
@@ -204,6 +207,10 @@ namespace WinHab
             {
                 this.lb_progressbar.Text = message;
             }));
+        }
+        public int getValueProgressBar()
+        {
+            return this.progressBar.Value;
         }
         #endregion
 

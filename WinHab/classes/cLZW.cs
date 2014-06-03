@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using WinHab.classes;
 
 namespace WinHab
 {
@@ -11,6 +12,7 @@ namespace WinHab
     {
         Hashtable Dico = new Hashtable();
         private string ReturnFolder;
+        private string ReturnFile;
         private string folderList = "";
         private string filesLZW = "";
         private int filePass = 0;
@@ -22,9 +24,11 @@ namespace WinHab
             return encoding.GetBytes(str);
         }
 
+
         //creation de la chaine d'encryptage des dossier
-        public void encrypFolfer(string folderePath)
+        public void encrypFolfer(string folderePath,string returnF)
         {
+            ReturnFile = returnF + ".LZW";
             string[] folders = folderePath.Split('\\');
             folderList = "\\"+folders[folders.Length-1];
             ListNewFile(folderePath);
@@ -40,6 +44,8 @@ namespace WinHab
             string folderLZW = LZW(folderList.ToCharArray());
             CreateFileLab(folderLZW+"|/folder|" + filesLZW);
             int a = 0;
+            Controlleur.getInstance().setValueProgressBar(200);
+            Controlleur.getInstance().setValueProgressBar(0);
         }
 
         //Création de l'arborecence de dossier (chaine d'entrée sous la forme chemin|nbr de ficher+chemin|nbr de fichier....)
@@ -66,6 +72,7 @@ namespace WinHab
                         if (!Directory.Exists(ReturnFolder + SendFolder))
                         {
                             Directory.CreateDirectory(ReturnFolder + SendFolder);
+                            Controlleur.getInstance().setValueProgressBar(Controlleur.getInstance().getValueProgressBar() + 13);
                             addFile(ReturnFolder + SendFolder, fileFolder[j]);// le fichier va s'ecrre dans le denier sous dossier...
                         }
                     }
@@ -92,6 +99,9 @@ namespace WinHab
         //creation de la chaine pour creer les odssier selon un arbo
         private string lastFolder(string folderePath)
         {
+            Controlleur.getInstance().initProgressBar(0, 200);
+            Controlleur.getInstance().setValueProgressBar(0);
+            Controlleur.getInstance().setMessageProgressBar("Compression des l'arborescence");
             string result="";
             string[] folders = Directory.GetDirectories(folderePath);
             if (folders.Length == 0)
@@ -107,8 +117,7 @@ namespace WinHab
                 }
                 ListNewFile(folderePath);
                 return result;
-            }
-            
+            }           
         }
 
         private void ListNewFile(string Path)
@@ -166,7 +175,7 @@ namespace WinHab
         {
             //buffer = jointByteArray(ExportDictionary(),ConvertToBinary(LZW));
 
-            BinaryWriter bw = new BinaryWriter(File.Create("C:\\convert.LZW"));
+            BinaryWriter bw = new BinaryWriter(File.Create(ReturnFile));
             char[] dictionnaire = ExportDictionary();
             char[] LZWChar = LZW.ToCharArray();
             for (int i = 0; i < dictionnaire.Length; i++)
@@ -195,13 +204,14 @@ namespace WinHab
         //encodage en LZW
         private string LZW(char[] text)
         {
+            
             string enCours = "";
             string sortie = "";
             string ECTXT;
 
             for (int i = 0; i < text.Length; i++)
             {
-
+                Controlleur.getInstance().setValueProgressBar(Controlleur.getInstance().getValueProgressBar()+1);
                 if (!OkDico(enCours + text[i]) && (enCours + text[i]).Length > 1)
                 {
                     ECTXT = enCours + text[i];
@@ -228,8 +238,9 @@ namespace WinHab
         }
 
         //fonction d'encryptage (appuie sur le bouton)
-        public bool encryp(string filePath)
+        public bool encryp(string filePath,string returnF)
         {
+            ReturnFile = returnF + ".LZW";
             CreateFileLab(stringForLZW(filePath));
             return true;
         }
@@ -239,6 +250,10 @@ namespace WinHab
         {
             char[] title = Path.GetFileName(filePath).ToCharArray();
             char[] text = extractFile(filePath).ToCharArray();
+
+            Controlleur.getInstance().initProgressBar(0, title.Length+text.Length);
+            Controlleur.getInstance().setValueProgressBar(0);
+            Controlleur.getInstance().setMessageProgressBar("Compression des données en bits (étape 1/2)");
 
             string titleL = LZW(title) + "|/FileN|";
             string file = LZW(text) + "|/File|";
@@ -261,13 +276,16 @@ namespace WinHab
         //fonction de decryptage (appuie sur le bouton)
          public bool decrypt(string filePath,string folder)
         {
+
             ReturnFolder = folder;
-            //string file = "";
             string file = extractFile(filePath);
+            //string file = "";
             var separ = new string[] { "|/Size|", "|/Dico|" };
             string[] words = file.Split(separ, StringSplitOptions.RemoveEmptyEntries);
+            Controlleur.getInstance().initProgressBar(0, Convert.ToInt32(words[0]) );
+            Controlleur.getInstance().setMessageProgressBar("Décompression du dictionnaire  (1/2)");
+            Controlleur.getInstance().setValueProgressBar(0);
             putInDico(words[1]);
-
             if (file.Contains("|/folder|"))
                 decryptFolder(words[2]);
             else
@@ -293,11 +311,15 @@ namespace WinHab
              int a = 0;
              var separ = new string[] { "|/folder|" };
              string[] FolderFiles = chaine.Split(separ, StringSplitOptions.RemoveEmptyEntries);
-
              separ = new string[] { "|/File|" };
              FilesList = FolderFiles[1].Split(separ, StringSplitOptions.RemoveEmptyEntries);
+             Controlleur.getInstance().initProgressBar(0, FolderFiles[1].Length);
+             Controlleur.getInstance().setMessageProgressBar("Décompression des fichiers");
+             Controlleur.getInstance().setValueProgressBar(0);
              for (int i = 0; i < FilesList.Length; i++)
+             {
                  FilesList[i] = FilesList[i] + "|File|";
+             }
              folderCreate(decriptOneFile(FolderFiles[0]));
          }
 
@@ -313,6 +335,7 @@ namespace WinHab
             {
                 if (LZW[i] != "")
                 {
+                    Controlleur.getInstance().setValueProgressBar(Controlleur.getInstance().getValueProgressBar() + 1);
                     car = Convert.ToInt32(LZW[i]);
                     if (Convert.ToInt32(LZW[i]) < 255)
                         text = text + ((char)car).ToString();
@@ -332,6 +355,7 @@ namespace WinHab
              Dico.Clear();
              for (int i = 0; i < dicoAdd.Length - 1; i++)
              {
+                 Controlleur.getInstance().setValueProgressBar(Controlleur.getInstance().getValueProgressBar() + 1);
                  Dico.Add((256+i), dicoAdd[i]);
              }
              return true;

@@ -69,6 +69,10 @@ namespace WinHab.classes
         {
             this.mainVue.setMessageProgressBar(chaine);
         }
+        public int getValueProgressBar()
+        {
+            return this.mainVue.getValueProgressBar();
+        }
     }
 }
 

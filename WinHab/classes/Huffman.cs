@@ -171,7 +171,8 @@ namespace WinHab.classes
 
             int endstring;
             BinaryWriter bw = null;
-            bw = new BinaryWriter(File.Create(Controlleur.getInstance().LienFileOutput + "_byte"));
+            bw = new BinaryWriter(File.Create(Controlleur.getInstance().LienFileOutput));
+            
             bw.Write(Convert.ToByte(size_car));
             foreach (var item in DicoResultat)
             {
@@ -262,7 +263,6 @@ namespace WinHab.classes
                 Controlleur.getInstance().setValueProgressBar(i);
             }
             
-            //on change discretement les bornes de la bar de progression, tout en la laissant à 50%
             Controlleur.getInstance().initProgressBar(0, chaineHex.Count()-1);
             Controlleur.getInstance().setValueProgressBar(0);
             Controlleur.getInstance().setMessageProgressBar("Ecriture des données compressé (étape 2/2)");
@@ -275,6 +275,9 @@ namespace WinHab.classes
                 Controlleur.getInstance().setValueProgressBar(i);
             }
 
+            //reset progress barre : 
+            Controlleur.getInstance().initProgressBar(0,0);
+            Controlleur.getInstance().setMessageProgressBar("Opération terminée.");
             
 
 

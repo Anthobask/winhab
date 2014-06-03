@@ -17,7 +17,7 @@ namespace WinHab.windows
         public Main()
         {
             InitializeComponent();
-            Controlleur.getInstance().MainVue = this;
+            //Controlleur.getInstance().MainVue = this;
         }
 
         private void bt_SelectFile_Click(object sender, EventArgs e)
@@ -27,27 +27,19 @@ namespace WinHab.windows
 
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-
                 System.IO.StreamReader sr = new
                    System.IO.StreamReader(openFileDialog1.FileName, Encoding.UTF8);
-
                 string content = sr.ReadToEnd();
                 sr.Close();
-
                 Controlleur.getInstance().LienFileInput = openFileDialog1.FileName;
-
                 Huffman FileHuffman = new Huffman(content);
                 Thread t = new Thread(() =>
                 {
                     FileHuffman.save();
-
                     MessageBox.Show("Terminé");
                 });
-                t.Start();
-                
-            }
-
-            
+                t.Start();                
+            }            
         }
 
         private void bt_SelectFile2_Click(object sender, EventArgs e)
@@ -62,6 +54,7 @@ namespace WinHab.windows
                Huffman FileHuffman = new Huffman();
                FileHuffman.decompresse();
                 
+
                 MessageBox.Show("Terminé");
             }
 

@@ -14,9 +14,9 @@ namespace WinHab.classes
         private string lienFileInput;
         private string lienFileOutput;
 
-        private Main mainVue;
+        private Form1 mainVue;
 
-        public Main MainVue
+        public Form1 MainVue
         {
             get { return mainVue; }
             set { mainVue = value; }
@@ -51,7 +51,6 @@ namespace WinHab.classes
                         _instance = new Controlleur();
                 }
             }
-
             return _instance;
         }
 

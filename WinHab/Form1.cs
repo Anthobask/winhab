@@ -43,12 +43,10 @@ namespace WinHab
                 // todo : verifier que le fichier ouput existe ou pas.
                 if (rd_huffman.Checked)
                 {
-                    System.IO.StreamReader sr = new
-                          System.IO.StreamReader(textBox1.Text, Encoding.UTF8);
-
+                    //lecture simple du fichier
+                    System.IO.StreamReader sr = new System.IO.StreamReader(textBox1.Text, Encoding.UTF8);
                     string content = sr.ReadToEnd();
                     sr.Close();
-
                     Controlleur.getInstance().LienFileInput = textBox1.Text;
 
                     Huffman FileHuffman = new Huffman(content);
@@ -61,7 +59,11 @@ namespace WinHab
                 }
                 else if (rd_LZW.Checked)
                 {
-                    LZW.encryp(textBox1.Text);
+                    Thread t = new Thread(() =>
+                    {
+                        LZW.encryp(textBox1.Text);
+                    });
+                    t.Start();
                 }
             }
             else
@@ -98,7 +100,10 @@ namespace WinHab
                 }
                 else
                 {
-                    LZW.encrypFolfer(textBox2.Text);
+                    Thread t = new Thread(() =>
+                    {
+                        LZW.encrypFolfer(textBox2.Text);
+                    });
                 }
             }
             else

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using WinHab.windows;
 
 namespace WinHab.classes
 {
@@ -12,6 +13,14 @@ namespace WinHab.classes
 
         private string lienFileInput;
         private string lienFileOutput;
+
+        private Main mainVue;
+
+        public Main MainVue
+        {
+            get { return mainVue; }
+            set { mainVue = value; }
+        }
 
         public string LienFileOutput
         {
@@ -45,5 +54,23 @@ namespace WinHab.classes
 
             return _instance;
         }
+
+        //gestion bar de progression :
+        public void initProgressBar(int min, int max)
+        {
+            this.mainVue.setMinProgressBar(min);
+            this.mainVue.setMaxProgressBar(max);
+            this.mainVue.setValueProgressBar(min);
+        }
+        public void setValueProgressBar(int value)
+        {
+            this.mainVue.setValueProgressBar(value);
+        }
+        public void setMessageProgressBar(string chaine)
+        {
+            this.mainVue.setMessageProgressBar(chaine);
+        }
     }
 }
+
+

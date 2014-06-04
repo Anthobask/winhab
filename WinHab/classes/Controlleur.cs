@@ -30,10 +30,7 @@ namespace WinHab.classes
         public string LienFileInput
         {
             get { return lienFileInput; }
-            set { 
-                lienFileInput = value;
-                lienFileOutput = value + ".hab";
-            }
+            set {lienFileInput = value; }
         }
 
         private Controlleur()

@@ -18,7 +18,7 @@ namespace WinHab.classes
 
         public Huffman()
         {
-            this.Filehab = Controlleur.getInstance().LienFileInput;
+            this.Filehab = Controlleur.getInstance().LienFileInput; // useless
         }
         public Huffman(string s, bool folder=false)
         {
@@ -80,7 +80,7 @@ namespace WinHab.classes
 
                 }
 
-                
+                /* Malheuresement pas terminé pour le jour J :'( */
                 
 
             }
@@ -109,8 +109,6 @@ namespace WinHab.classes
 
                 arbo_temp += System.IO.Path.GetFileName(sFileName);
             }
-
-
             arborescence = arbo_temp;
             chaine = chaine_temp;
         }
@@ -298,6 +296,10 @@ namespace WinHab.classes
             byte length = br.ReadByte();           
             while (length != 0x00)
             {
+                if (length > 99)
+                {
+                    Console.WriteLine("stop");
+                }
                 // caractere ;
                 int caractere = 0x00;
                 for (int i = 0; i < sizeCar; i++)
@@ -308,16 +310,16 @@ namespace WinHab.classes
                 }
 
                 // Noeud arbre
-                byte length_f;
+                byte length_f = 0x00;
                 if (length % 2 != 0) length_f = (byte)(length + 0x01);
                 else length_f = length;
 
-                int noeud = 0x00;
+                long noeud = -1;
                 for (int i = 0; i < (length_f/2); i ++)
                 {
                     byte curB = br.ReadByte();
-                    if (noeud == 0x00) noeud = (int)curB;
-                    else noeud = noeud * 0x100 + (int)curB;
+                    if (noeud < 0x00) noeud = (long)curB;
+                    else noeud = noeud * 0x100 + (long)curB;
                 }
 
                 string noeudS = noeud.ToString("X" + length_f).Substring(0, length);
@@ -327,12 +329,13 @@ namespace WinHab.classes
                 DicoResultat.Add((char)caractere, noeudS);
 
                 length = br.ReadByte();
+
             }
 
             //prochaine byte = offset de fin de chaine.
             int offsetend = br.ReadByte();
 
-            //puis la phrase en elle-meme :
+            //Puis la phrase en elle-même :
             byte byteNext;
             string chaineBinaire = "";
 
@@ -356,14 +359,14 @@ namespace WinHab.classes
             }
 
             // On enleve l'offset de fin : 
-            chaineBinaire = chaineBinaire.Substring(0, chaineBinaire.Length - offsetend +1);
+            chaineBinaire = chaineBinaire.Substring(0, chaineBinaire.Length - offsetend -1);
 
             //Puis on décode la chaine avec le dictionnaire :
             string chaine_temp = "";
             string chaine_final = "";
 
 
-            System.IO.StreamWriter sw = new System.IO.StreamWriter(Controlleur.getInstance().LienFileInput + "_old");
+            System.IO.StreamWriter sw = new System.IO.StreamWriter(Controlleur.getInstance().LienFileOutput);
 
             for (int i = 0; i < chaineBinaire.Length - 1; i++)
             {

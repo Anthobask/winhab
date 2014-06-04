@@ -124,13 +124,8 @@ namespace WinHab
 
         private string extractFile(string path)
         {
-            string result = "";
-            BinaryReader br = new BinaryReader(File.OpenRead(path));
-            while (br.BaseStream.Position != br.BaseStream.Length)
-            {
-                result = result + ((char)br.ReadByte()).ToString();
-            }
-            return result;
+            StreamReader sr = new StreamReader(path);
+            return sr.ReadToEnd();
         }
 
         //verification de la presence du terme dans le dictionnaire
@@ -149,31 +144,24 @@ namespace WinHab
         }
 
         //export du dictionnaire
-        private char[] ExportDictionary()
+        private byte[] ExportDictionary()
         {
             string BufferDico;
             BufferDico = Dico.Count.ToString() + "|/Size|";
             for (int i = 0; i < Dico.Count; i++)
             {
-                BufferDico = BufferDico + Dico[256 + i].ToString() + "|;|";
+                BufferDico = BufferDico + (256 + i).ToString() + ":" + Dico[256 + i].ToString() + "|;|";
             }
             BufferDico = BufferDico + "|/Dico|";
-           return BufferDico.ToCharArray();
+           return ConvertToBinary(BufferDico);
         }
 
         //création du fichier de sortie .LZW
         private void CreateFileLab(string LZW)
         {
-            //buffer = jointByteArray(ExportDictionary(),ConvertToBinary(LZW));
-
-            BinaryWriter bw = new BinaryWriter(File.Create("C:\\convert.LZW"));
-            char[] dictionnaire = ExportDictionary();
-            char[] LZWChar = LZW.ToCharArray();
-            for (int i = 0; i < dictionnaire.Length; i++)
-                bw.Write(Convert.ToByte(dictionnaire[i]));
-            for (int i = 0; i < LZWChar.Length; i++)
-                bw.Write(Convert.ToByte(LZWChar[i]));
-            bw.Close();
+            byte[] buffer = new byte[0];
+            buffer = jointByteArray(ExportDictionary(),ConvertToBinary(LZW));
+            File.WriteAllBytes(@"c:\sortie.lzw", buffer);
         }
 
 
@@ -205,8 +193,7 @@ namespace WinHab
                 if (!OkDico(enCours + text[i]) && (enCours + text[i]).Length > 1)
                 {
                     ECTXT = enCours + text[i];
-                   if ((enCours + text[i]).Length < 5)
-                        Dico.Add((256 + Dico.Count), enCours + text[i]);
+                    Dico.Add((256 + Dico.Count), enCours + text[i]);
                     if (enCours.Length > 1)
                         sortie = sortie + searchDico(enCours) + ";";
                     else
@@ -262,7 +249,6 @@ namespace WinHab
          public bool decrypt(string filePath,string folder)
         {
             ReturnFolder = folder;
-            //string file = "";
             string file = extractFile(filePath);
             var separ = new string[] { "|/Size|", "|/Dico|" };
             string[] words = file.Split(separ, StringSplitOptions.RemoveEmptyEntries);
@@ -311,14 +297,11 @@ namespace WinHab
 
             for (int i = 0; i < LZW.Length-1; i++)
             {
-                if (LZW[i] != "")
-                {
-                    car = Convert.ToInt32(LZW[i]);
-                    if (Convert.ToInt32(LZW[i]) < 255)
-                        text = text + ((char)car).ToString();
-                    else
-                        text = text + Dico[car];
-                }
+                car = Convert.ToInt32(LZW[i]);
+                if (Convert.ToInt32(LZW[i]) < 255)
+                    text = text + ((char)car).ToString();
+                else
+                    text = text + Dico[LZW[i]];
             }
             return text;
             
@@ -329,10 +312,12 @@ namespace WinHab
          {
              var separ = new string[] { "|;|" };
              string[] dicoAdd = dico.Split(separ, StringSplitOptions.RemoveEmptyEntries);
+             string[] put;
              Dico.Clear();
              for (int i = 0; i < dicoAdd.Length - 1; i++)
              {
-                 Dico.Add((256+i), dicoAdd[i]);
+                 put=dicoAdd[i].Split(':');
+                 Dico.Add(put[0], put[1]);
              }
              return true;
          }

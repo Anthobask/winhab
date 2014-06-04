@@ -62,6 +62,7 @@ namespace WinHab
                     Thread t = new Thread(() =>
                     {
                         LZW.encryp(textBox1.Text);
+                        MessageBox.Show("Terminé");
                     });
                     t.Start();
                 }
@@ -103,6 +104,8 @@ namespace WinHab
                     Thread t = new Thread(() =>
                     {
                         LZW.encrypFolfer(textBox2.Text);
+
+                        MessageBox.Show("Terminé");
                     });
                 }
             }
@@ -124,19 +127,29 @@ namespace WinHab
 
         private void button7_Click(object sender, EventArgs e)
         {
-             if (!System.IO.File.Exists(textBox2.Text))
+            if (System.IO.File.Exists(textBox4.Text))
             {
-                FolderBrowserDialog dossier = new FolderBrowserDialog();
-                if (dossier.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                Controlleur.getInstance().LienFileInput = textBox4.Text;
+                if (rd_huffman.Checked)
                 {
-                    if (rd_huffman.Checked)
+                    SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+                    if (saveFileDialog1.ShowDialog() == DialogResult.OK)
                     {
-                        Huffman FileHuffman = new Huffman();
-                        FileHuffman.decompresse();
+                        WinHab.classes.Controlleur.getInstance().LienFileOutput = saveFileDialog1.FileName;
                     }
-                    else if (rd_LZW.Checked)
+                    Huffman FileHuffman = new Huffman();
+                    FileHuffman.decompresse();
+
+                    MessageBox.Show("Terminé");
+                }
+                else if (rd_LZW.Checked)
+                {
+                    FolderBrowserDialog dossier = new FolderBrowserDialog();
+                    if (dossier.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
                         LZW.decrypt(textBox4.Text, dossier.SelectedPath);
+
+                        MessageBox.Show("Terminé");
                     }
                 }
             }

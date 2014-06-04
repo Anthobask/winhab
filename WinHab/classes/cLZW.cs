@@ -43,7 +43,6 @@ namespace WinHab
 
             string folderLZW = LZW(folderList.ToCharArray());
             CreateFileLab(folderLZW+"|/folder|" + filesLZW);
-            int a = 0;
             Controlleur.getInstance().setValueProgressBar(200);
             Controlleur.getInstance().setValueProgressBar(0);
         }
@@ -308,7 +307,6 @@ namespace WinHab
 
          private void decryptFolder(string chaine)
          {
-             int a = 0;
              var separ = new string[] { "|/folder|" };
              string[] FolderFiles = chaine.Split(separ, StringSplitOptions.RemoveEmptyEntries);
              separ = new string[] { "|/File|" };

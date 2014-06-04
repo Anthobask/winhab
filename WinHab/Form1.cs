@@ -61,7 +61,7 @@ namespace WinHab
                 {
                     Thread t = new Thread(() =>
                     {
-                        LZW.encryp(textBox1.Text);
+                        LZW.encryp(textBox1.Text, saveFileDialog1.FileName);
                         MessageBox.Show("Terminé");
                     });
                     t.Start();
@@ -103,7 +103,7 @@ namespace WinHab
                 {
                     Thread t = new Thread(() =>
                     {
-                        LZW.encrypFolfer(textBox2.Text);
+                        LZW.encrypFolfer(textBox2.Text, saveFileDialog1.FileName);
 
                         MessageBox.Show("Terminé");
                     });
@@ -147,7 +147,7 @@ namespace WinHab
                     FolderBrowserDialog dossier = new FolderBrowserDialog();
                     if (dossier.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
-                        LZW.Decrypt(textBox4.Text, dossier.SelectedPath);
+                        LZW.decrypt(textBox4.Text, dossier.SelectedPath);
 
                         MessageBox.Show("Terminé");
                     }

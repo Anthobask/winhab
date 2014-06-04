@@ -86,7 +86,7 @@ namespace WinHab
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (System.IO.File.Exists(textBox2.Text))
+            if (System.IO.Directory.Exists(textBox2.Text))
             {
                 SaveFileDialog saveFileDialog1 = new SaveFileDialog();
                 if (saveFileDialog1.ShowDialog() == DialogResult.OK)
@@ -147,7 +147,7 @@ namespace WinHab
                     FolderBrowserDialog dossier = new FolderBrowserDialog();
                     if (dossier.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
-                        LZW.decrypt(textBox4.Text, dossier.SelectedPath);
+                        LZW.Decrypt(textBox4.Text, dossier.SelectedPath);
 
                         MessageBox.Show("Terminé");
                     }

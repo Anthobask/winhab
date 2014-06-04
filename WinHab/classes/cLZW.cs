@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections;
 using System.Linq;
 using System.Text;
@@ -26,7 +26,6 @@ namespace WinHab
 
 
         //creation de la chaine d'encryptage des dossier
-        public void encrypFolfer(string folderePath)
         public void encrypFolfer(string folderePath,string returnF)
         {
             ReturnFile = returnF + ".LZW";
@@ -118,8 +117,6 @@ namespace WinHab
                 }
                 ListNewFile(folderePath);
                 return result;
-            }
-            
             }           
         }
 
@@ -178,7 +175,6 @@ namespace WinHab
         {
             //buffer = jointByteArray(ExportDictionary(),ConvertToBinary(LZW));
 
-            BinaryWriter bw = new BinaryWriter(File.Create("C:\\convert.LZW"));
             BinaryWriter bw = new BinaryWriter(File.Create(ReturnFile));
             char[] dictionnaire = ExportDictionary();
             char[] LZWChar = LZW.ToCharArray();
@@ -215,7 +211,6 @@ namespace WinHab
 
             for (int i = 0; i < text.Length; i++)
             {
-
                 Controlleur.getInstance().setValueProgressBar(Controlleur.getInstance().getValueProgressBar()+1);
                 if (!OkDico(enCours + text[i]) && (enCours + text[i]).Length > 1)
                 {
@@ -243,7 +238,6 @@ namespace WinHab
         }
 
         //fonction d'encryptage (appuie sur le bouton)
-        public bool encryp(string filePath)
         public bool encryp(string filePath,string returnF)
         {
             ReturnFile = returnF + ".LZW";
@@ -284,7 +278,6 @@ namespace WinHab
         {
 
             ReturnFolder = folder;
-            //string file = "";
             string file = extractFile(filePath);
             //string file = "";
             var separ = new string[] { "|/Size|", "|/Dico|" };
@@ -293,7 +286,6 @@ namespace WinHab
             Controlleur.getInstance().setMessageProgressBar("Décompression du dictionnaire  (1/2)");
             Controlleur.getInstance().setValueProgressBar(0);
             putInDico(words[1]);
-
             if (file.Contains("|/folder|"))
                 decryptFolder(words[2]);
             else
@@ -319,7 +311,6 @@ namespace WinHab
              int a = 0;
              var separ = new string[] { "|/folder|" };
              string[] FolderFiles = chaine.Split(separ, StringSplitOptions.RemoveEmptyEntries);
-
              separ = new string[] { "|/File|" };
              FilesList = FolderFiles[1].Split(separ, StringSplitOptions.RemoveEmptyEntries);
              Controlleur.getInstance().initProgressBar(0, FolderFiles[1].Length);

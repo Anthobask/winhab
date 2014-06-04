@@ -223,6 +223,10 @@ namespace WinHab
                 this.lb_progressbar.Text = message;
             }));
         }
+        public int getValueProgressBar()
+        {
+            return this.progressBar.Value;
+        }
         #endregion
 
 
